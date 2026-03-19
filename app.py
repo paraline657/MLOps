@@ -1,6 +1,7 @@
 import streamlit as st
 import joblib
 import numpy as np
+from openai import OpenAI
 
 # 1. 저장했던 인공지능 '뇌' 불러오기
 model = joblib.load('iris_model.pkl')
@@ -27,3 +28,39 @@ if st.button("어떤 꽃일까?"):
     
     # 결과 화면에 출력
     st.success(f"이 꽃은 바로... **{result}** 입니다!")
+
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+
+st.divider() # 화면에 줄 긋기
+st.subheader("🤖 붓꽃 전문가 챗봇")
+
+# 2. 채팅 메시지를 저장할 공간 만들기 (Streamlit 특성상 필요해)
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# 3. 이전에 나눈 대화 화면에 보여주기
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# 4. 사용자 입력 받기
+if prompt := st.chat_input("붓꽃에 대해 궁금한 점을 물어보세요!"):
+    # 내 메시지 화면에 표시
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # 5. OpenAI에게 질문 던지고 답변 받기
+    with st.chat_message("assistant"):
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "너는 붓꽃 전문가야. 친절하게 대답해줘."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        full_response = response.choices[0].message.content
+        st.markdown(full_response)
+        
+    # 답변도 저장하기
+    st.session_state.messages.append({"role": "assistant", "content": full_response})
