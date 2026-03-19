@@ -2,9 +2,13 @@ import streamlit as st
 import joblib
 import numpy as np
 from groq import Groq
+import os
+
+current_dir = os.path.dirname(__file__)
+model_path = os.path.join(current_dir, 'iris_model.pkl')
 
 # 1. 저장했던 인공지능 '뇌' 불러오기
-model = joblib.load('iris_model.pkl')
+model = joblib.load('model_path')
 
 # 2. 웹 화면 꾸미기
 st.title("🌸 붓꽃 종류 맞추기 인공지능")
