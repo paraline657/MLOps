@@ -1,7 +1,7 @@
 import streamlit as st
 import joblib
 import numpy as np
-from openai import OpenAI
+from groq import Groq
 
 # 1. 저장했던 인공지능 '뇌' 불러오기
 model = joblib.load('iris_model.pkl')
@@ -29,7 +29,7 @@ if st.button("어떤 꽃일까?"):
     # 결과 화면에 출력
     st.success(f"이 꽃은 바로... **{result}** 입니다!")
 
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
 st.divider() # 화면에 줄 긋기
 st.subheader("🤖 붓꽃 전문가 챗봇")
@@ -45,17 +45,13 @@ for message in st.session_state.messages:
 
 # 4. 사용자 입력 받기
 if prompt := st.chat_input("붓꽃에 대해 궁금한 점을 물어보세요!"):
-    # 내 메시지 화면에 표시
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    # 5. OpenAI에게 질문 던지고 답변 받기
+    
     with st.chat_message("assistant"):
+        # 호출 방식이 OpenAI랑 거의 똑같아서 쉬워!
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="llama3-8b-8192",  # 무료로 쓸 수 있는 강력한 모델이야
             messages=[
-                {"role": "system", "content": "너는 붓꽃 전문가야. 친절하게 대답해줘."},
+                {"role": "system", "content": "너는 붓꽃 전문가야."},
                 {"role": "user", "content": prompt}
             ]
         )
