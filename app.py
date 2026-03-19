@@ -46,6 +46,9 @@ for message in st.session_state.messages:
 # 4. 사용자 입력 받기
 if prompt := st.chat_input("붓꽃에 대해 궁금한 점을 물어보세요!"):
     
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
     with st.chat_message("assistant"):
         # 호출 방식이 OpenAI랑 거의 똑같아서 쉬워!
         response = client.chat.completions.create(
