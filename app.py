@@ -52,7 +52,7 @@ if prompt := st.chat_input("붓꽃에 대해 궁금한 점을 물어보세요!")
     with st.chat_message("assistant"):
         # 호출 방식이 OpenAI랑 거의 똑같아서 쉬워!
         response = client.chat.completions.create(
-            model="llama3-8b-8192",  
+            model="llama-3.1-8b-instant",  
             messages=[
                 {"role": "system", "content": "너는 붓꽃 전문가야."},
                 {"role": "user", "content": prompt}
