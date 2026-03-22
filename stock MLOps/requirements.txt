@@ -1,0 +1,9 @@
+yfinance
+pandas
+scikit-learn
+plotly
+streamlit
+finance-datareader
+transformers
+torch
+GoogleNews
